@@ -55,7 +55,7 @@ class Server:
                     break
             data.append(curr)
         res['data'] = data
-        re['page_size'] = len(data)
+        res['page_size'] = len(data)
         if dataset.get(index):
             res['next_index'] = index
         else:
