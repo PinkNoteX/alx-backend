@@ -41,12 +41,12 @@ class Server:
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """ get_hyper_index """
-        dataset = self.indexed_dataset()
+                dataset = self.indexed_dataset()
         data_length = len(dataset)
         assert 0 <= index < data_length
-        res = {}
+        response = {}
         data = []
-        res['index'] = index
+        response['index'] = index
         for i in range(page_size):
             while True:
                 curr = dataset.get(index)
@@ -54,10 +54,10 @@ class Server:
                 if curr is not None:
                     break
             data.append(curr)
-        res['data'] = data
-        res['page_size'] = len(data)
+        response['data'] = data
+        response['page_size'] = len(data)
         if dataset.get(index):
-            res['next_index'] = index
+            response['next_index'] = index
         else:
-            res['next_index'] = None
-        return res
+            response['next_index'] = None
+        return response
