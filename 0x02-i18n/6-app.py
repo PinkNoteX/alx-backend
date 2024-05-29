@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
 """ flask """
-from flask import Flask
-from flask import request
-from flask import render_template
 from flask_babel import Babel
+from typing import Union, Dict
+from flask import Flask, render_template, request, g
 
 
-class Config(object):
-    """ config """
-    LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
+class Config:
+    """ config class """
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
-# Instantiate the application object
 app = Flask(__name__)
 app.config.from_object(Config)
-
-# Wrap the application with Babel
+app.url_map.strict_slashes = False
 babel = Babel(app)
-
-
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -39,14 +34,14 @@ def get_user() -> Union[Dict, None]:
 
 @app.before_request
 def before_request() -> None:
-    """ before request """
+    """ before_request """
     user = get_user()
     g.user = user
 
 
 @babel.localeselector
 def get_locale() -> str:
-    """ get locale """
+    """ get_locale """
     locale = request.args.get('locale', '')
     if locale in app.config["LANGUAGES"]:
         return locale
@@ -58,11 +53,11 @@ def get_locale() -> str:
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
-@app.route('/', strict_slashes=False)
-def index():
+@app.route('/')
+def get_index() -> str:
     """ index """
     return render_template('6-index.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
